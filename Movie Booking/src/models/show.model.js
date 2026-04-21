@@ -19,7 +19,7 @@ const showSchema = Schema({
         type: Date,
         required: true
     },
-    ticketPrice: {
+    price: { // Controller ke saath match karne ke liye 'price' rakha hai
         type: Number,
         required: true
     },
@@ -27,8 +27,12 @@ const showSchema = Schema({
         type: Number,
         default: 60
     },
+    availableSeats: { // Ye track karega ki kitni seats bachi hain
+        type: Number,
+        default: 60
+    },
     reservedSeats: {
-        type: [String],
+        type: [String], // Example: ["A1", "A2", "B5"]
         default: []
     },
     isDeleted: {

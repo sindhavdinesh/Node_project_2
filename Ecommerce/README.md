@@ -1,213 +1,63 @@
-# 🛒 E-Commerce Backend API
+# 🎬 Movie Booking System - Backend
 
-A scalable and secure **E-Commerce Backend API** built using **Node.js, Express.js, and MongoDB**.
-This project provides complete backend functionality including authentication, product management, cart, wishlist, and order handling.
-
----
-
-## Features
-
-* 🔐 User Authentication (JWT Based)
-* 📦 Product Management (CRUD Operations)
-* 🗂 Category & Subcategory Management
-* 🛒 Cart Management System
-* ❤️ Wishlist Functionality
-* 📑 Order Management
-* 🖼 Image Upload Support (Multer)
-* ✅ Input Validation (express-validator)
-* 🛡 Secure APIs with Middleware & Role-Based Access
+A professional-grade Node.js backend architecture for a Movie Ticket Booking application. This system handles everything from secure user authentication to complex show scheduling and real-time seat reservations.
 
 ---
 
-## 🛠 Tech Stack
+## 🌟 Key Features
 
-| Technology        | Description         |
-| ----------------- | ------------------- |
-| Node.js           | Runtime Environment |
-| Express.js        | Backend Framework   |
-| MongoDB           | NoSQL Database      |
-| Mongoose          | ODM for MongoDB     |
-| JWT               | Authentication      |
-| Multer            | File Upload         |
-| express-validator | Validation          |
-
----
-
-## 📁 Project Structure
-
-```
-Ecommerce/
-│
-├── config/
-│   └── dbConnection.js
-│
-├── controllers/
-│   ├── cart.controller.js
-│   ├── category.controller.js
-│   ├── product.controller.js
-│   ├── subcategory.controller.js
-│   ├── user.controller.js
-│   └── wishlist.controller.js
-│
-├── middleware/
-│   ├── AuthToken.js
-│   ├── UploadImage.js
-│   ├── validationUser.js
-│   └── VerifyRole.js
-│
-├── models/
-│   ├── cart.model.js
-│   ├── category.model.js
-│   ├── product.model.js
-│   ├── subCategory.model.js
-│   ├── user.model.js
-│   └── wishlist.model.js
-│
-├── routes/
-│   ├── cart.route.js
-│   ├── category.route.js
-│   ├── index.route.js
-│   ├── product.route.js
-│   ├── subcategory.route.js
-│   ├── user.route.js
-│   └── wishlist.route.js
-│
-├── public/
-├── uploads/
-├── .env
-├── app.js / server.js
-├── package.json
-└── package-lock.json
-```
+- **Robust Authentication**: JWT-based security with Role-Based Access Control (RBAC).
+- **Movie Management**: Full CRUD operations with support for movie posters via Multer.
+- **Cinema Logic**: 
+  - Manage multiple screens and theater locations.
+  - Smart scheduling with automated timing conflict detection.
+- **Booking Engine**: 
+  - Real-time seat reservation (e.g., A1, A2).
+  - Dynamic seat availability tracking (`availableSeats` vs `totalSeats`).
+  - Automatic price calculation.
+- **Performance**: Optimized data fetching using MongoDB Aggregation pipelines and indexing.
+- **Integrity**: Soft-delete functionality for all critical records.
 
 ---
 
-## ⚙️ Installation & Setup
+## 🛠️ Tech Stack
 
-### 1️⃣ Clone the repository
-
-```
-git clone <your-repo-url>
-cd ecommerce
-```
-
-### 2️⃣ Install dependencies
-
-```
-npm install
-```
-
-### 3️⃣ Setup Environment Variables
-
-Create `.env` file:
-
-```
-PORT=1024
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
-```
+- **Runtime**: Node.js
+- **Framework**: Express.js
+- **Database**: MongoDB with Mongoose ODM
+- **Authentication**: JWT (JSON Web Tokens) & Bcrypt
+- **File Handling**: Multer for image uploads
 
 ---
 
-## ▶️ Run Project
+## 📂 Project Structure
 
-### Development Mode
+```text
+Movie Booking/
+├── public/                 # Static assets (Movie posters & images)
+├── src/
+│   ├── config/             # Database configuration (MongoDB connection)
+│   ├── controllers/        # Core business logic (Booking, Show, Movie, User)
+│   ├── middleware/         # Auth guards, role verification, & validators
+│   ├── models/             # Mongoose schemas & data structure
+│   ├── routes/             # Express API routes
+│   ├── utils/              # Reusable helper utilities
+│   └── .env                # Environment variables (Secrets)
+├── .gitignore              # Files to be excluded from version control
+├── server.js               # Application entry point
+└── README.md               # Project documentation
 
-```
-npm run dev
-```
 
-### Production Mode
+## 📡 API Overview (Endpoints)
 
-```
-node server.js
-```
+| Module   | Method | Endpoint                    | Description                         |
+| :------- | :----- | :-------------------------- | :---------------------------------- |
+| Auth     | POST   | /api/user/login             | Returns secure JWT token            |
+| Movie    | POST   | /api/movie/add              | Add movie with poster upload        |
+| Screen   | GET    | /api/screen/fetch-screen    | List all cinema halls               |
+| Show     | POST   | /api/show/add-show          | Schedule a movie on a screen        |
+| Booking  | POST   | /api/booking/add-booking    | Reserve seats for a show            |
+| User     | GET    | /api/booking/my-booking     | Fetch user's booking history        |
 
----
-
-## 🔗 API Endpoints
-
-### 🔐 Authentication
-
-* POST `/api/user/register` → Register User
-* POST `/api/user/login` → Login User
-
----
-
-### 📦 Products
-
-* POST `/api/product/add`
-* GET `/api/product/all`
-* PUT `/api/product/update/:id`
-* DELETE `/api/product/delete/:id`
-
----
-
-### 🗂 Category
-
-* POST `/api/category/add`
-* GET `/api/category/all`
-* PUT `/api/category/update/:id`
-* DELETE `/api/category/delete/:id`
-
----
-
-### 🧩 SubCategory
-
-* POST `/api/subcategory/add`
-* GET `/api/subcategory/all`
-* PUT `/api/subcategory/update/:id`
-* DELETE `/api/subcategory/delete/:id`
-
----
-
-### 🛒 Cart
-
-* POST `/api/cart/add`
-* GET `/api/cart/all`
-* PUT `/api/cart/update/:id`
-* DELETE `/api/cart/remove/:id`
-
----
-
-### ❤️ Wishlist
-
-* POST `/api/wishlist/add`
-* GET `/api/wishlist/all`
-* DELETE `/api/wishlist/remove/:id`
-
----
-
-## 🔐 Authentication
-
-All protected routes require JWT token:
-
-```
-Authorization: Bearer <token>
-```
-
----
-
-## 🧠 Key Concepts Covered
-
-* REST API Development
-* MVC Architecture
-* Authentication & Authorization
-* File Upload Handling
-* Middleware Usage
-* MongoDB Relations
-* CRUD Operations
-
----
-
-## 👨‍💻 Author
-
-**Sindhav Dinesh**
-
----
-
-## ⭐ Conclusion
-
-This project demonstrates a complete backend system for an E-Commerce platform, covering real-world features and scalable architecture.
-
----
+Author
+Sindhav Dinesh

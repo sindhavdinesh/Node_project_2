@@ -1,86 +1,79 @@
 const Wishlist = require('../models/wishlist.model');
 const Product = require('../models/product.model');
 
+// 1. ADD TO WISHLIST
 exports.addToWishlist = async (req, res) => {
     try {
         let userId = req.user._id;
+        const { productId } = req.body;
 
-        let product = await Product.findById(req.body.productId);
+        // Check if product exists
+        let product = await Product.findById(productId);
         if (!product || product.isDeleted == true) {
-            return res.json({ message: "Product not found" });
+            return res.status(404).json({ message: "Product not found" });
         }
 
-        // Find wishlist
+        // Find user's wishlist
         let wishlist = await Wishlist.findOne({ userId });
 
         if (!wishlist) {
-            // Create new wishlist
+            // Nayi wishlist banayein agar nahi hai toh
             wishlist = await Wishlist.create({
                 userId,
-                items: [
-                    {
-                        productId: req.body.productId
-                    }
-                ]
+                items: [{ productId }]
             });
         } else {
-            // Check if already exists
-            let item = wishlist.items.find(
-                (item) => item.productId.toString() === req.body.productId
+            // Check karein ki product pehle se toh nahi hai
+            let itemExists = wishlist.items.find(
+                (item) => item.productId.toString() === productId
             );
 
-            if (item) {
-                return res.json({
-                    message: "Product already in wishlist"
-                });
+            if (itemExists) {
+                return res.status(400).json({ message: "Product already in wishlist" });
             }
 
-            // Add new product
+            // Wishlist update karein ($push use karke)
             wishlist = await Wishlist.findOneAndUpdate(
                 { userId },
-                {
-                    $push: {
-                        items: {
-                            productId: req.body.productId
-                        }
-                    }
-                },
+                { $push: { items: { productId } } },
                 { new: true }
             );
         }
 
-        // Populate product details
+        // Final Data Populate karke bhejein
         wishlist = await Wishlist.findOne({ userId }).populate({
             path: "items.productId",
-            select: "name price images"
+            select: "name price productImage" // Aapke model mein 'productImage' hai shayad
         });
 
-        return res.json({
+        return res.status(200).json({
             message: "Product added to wishlist",
             data: wishlist
         });
 
     } catch (error) {
-        return res.json({
+        return res.status(500).json({
             message: "Server Error",
             error: error.message
         });
     }
 };
 
+// 2. GET ALL WISHLIST ITEMS
 exports.getAllWishlist = async (req, res) => {
     try {
         let userId = req.user._id;
 
-        let wishlist = await Wishlist.findOne({ userId, isDelete: false })
+        let wishlist = await Wishlist.findOne({ userId })
             .populate({
                 path: "items.productId",
-                select: "name price images"
+                select: "name price productImage"
             });
 
-        if (!wishlist) {
-            return res.status(404).json({
-                message: "Wishlist not found"
+        if (!wishlist || wishlist.items.length === 0) {
+            return res.status(200).json({
+                message: "Wishlist is empty",
+                data: []
             });
         }
 
@@ -97,29 +90,23 @@ exports.getAllWishlist = async (req, res) => {
     }
 };
 
-
+// 3. REMOVE FROM WISHLIST
 exports.removeWishlist = async (req, res) => {
     try {
         let userId = req.user._id;
         let { productId } = req.body;
 
         let wishlist = await Wishlist.findOneAndUpdate(
-            { userId, isDelete: false },
-            {
-                $pull: {
-                    items: { productId: productId }
-                }
-            },
+            { userId },
+            { $pull: { items: { productId: productId } } },
             { new: true }
         ).populate({
             path: "items.productId",
-            select: "name price images"
+            select: "name price productImage"
         });
 
         if (!wishlist) {
-            return res.status(404).json({
-                message: "Wishlist not found"
-            });
+            return res.status(404).json({ message: "Wishlist not found" });
         }
 
         return res.status(200).json({

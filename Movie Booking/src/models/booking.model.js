@@ -1,33 +1,33 @@
 import mongoose, { Schema } from "mongoose";
 
 const bookingSchema = Schema({
-    userId: {
-        type: Schema.Types.ObjectId,
-        ref: 'users',
-        required: true
-    },
     showId: {
         type: Schema.Types.ObjectId,
         ref: 'shows',
         required: true
     },
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: 'users',
+        required: true
+    },
     seats: {
         type: [String],
-        default: []
+        required: true
     },
     totalAmount: {
         type: Number,
-        min: 0,
         required: true
     },
-    isDeleted: {
+    status: {
+        type: String,
+        enum: ['pending', 'confirmed', 'cancelled'],
+        default: 'confirmed'
+    },
+    isDeleted: { // Ye zaroori hai controller logic ke liye
         type: Boolean,
         default: false
     }
-}, {
-    timestamps: true,
-    versionKey: false
-});
+}, { timestamps: true, versionKey: false });
 
 export const bookingModel = mongoose.model('bookings', bookingSchema);
-

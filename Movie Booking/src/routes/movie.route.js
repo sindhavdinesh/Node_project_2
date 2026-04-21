@@ -1,19 +1,14 @@
 import { Router } from "express";
-import { addMovie, deleteMovie, fetchMovie, updateMovie } from "../controllers/movie.controller.js";
-import { addMovieValidator, updateMovieValidator } from "../middleware/validators/express.validator.js";
-import verifyToken from "../middleware/verifyToken.js";
-import { verifyRole } from "../middleware/verifyRole.js";
-import IMAGE from '../middleware/multer.js'
-import validate from "../middleware/validators/validate.js";
+const router = Router();
 
-const movieRouter = Router();
+// 1. fetchMovie 
+import { addMovie, fetchMovie } from "../controllers/movie.controller.js"; 
+import upload from "../middleware/multer.js";
 
-movieRouter.post('/add-movie', verifyToken, verifyRole('admin'), IMAGE.single('posterImage'), addMovieValidator, validate, addMovie);
+// POST URL
+router.post('/add', upload.single('movieImage'), addMovie);
 
-movieRouter.post('/update-movie/:id', verifyToken, verifyRole('admin'), updateMovieValidator, validate,IMAGE.single('posterImage'), updateMovie);
+// 2. GET URL
+router.get('/all', fetchMovie);
 
-movieRouter.get('/fetch-movie', verifyToken, fetchMovie);
-
-movieRouter.delete('/delete-movie/:id', verifyToken, verifyRole('admin'), deleteMovie)
-
-export default movieRouter;
+export default router;

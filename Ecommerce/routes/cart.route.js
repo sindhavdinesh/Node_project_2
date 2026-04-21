@@ -1,10 +1,12 @@
-const express = require('express')
-const router = express.Router()
+const express = require("express");
+const router = express.Router();
+const { addToCart, getCart } = require("../controllers/cart.controller");
 const { verifyToken } = require("../middleware/AuthToken");
-const { addToCart, getAllCarts, removeCart } = require("../controllers/cart.controller")
 
-router.post("/add-cart", verifyToken, addToCart);
-router.get("/get-cart", verifyToken, getAllCarts);
-router.put("/remove-cart", verifyToken, removeCart);
+// URL: /api/cart/add
+router.post("/add", verifyToken, addToCart); 
+
+// URL: /api/cart/all
+router.get("/all", verifyToken, getCart);
 
 module.exports = router;

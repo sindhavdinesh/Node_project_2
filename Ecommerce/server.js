@@ -1,26 +1,33 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors'); // <--- 1. Sabse pehle yahan import karein
 const app = express();
 const path = require('path');
-
 const connectDB = require('./config/dbConnection');
 
-const categoryRouter = require('./routes/category.route');
-const userRouter = require('./routes/user.route');
-const router = require("./src/routes/index.route"); 
-
+// Database Connect
 connectDB();
 
+// --- Middlewares ---
+
+app.use(cors()); // <--- 2. Ise sabse upar rakhein taaki koi request block na ho
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Static Folders
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(express.static(path.join(__dirname, 'public')));
-app.set('view engine', 'ejs');
 
-app.use("/uploads", express.static("uploads"));
-
+// --- Routes ---
+const router = require('./routes/index.route'); 
 app.use('/api', router);
 
-app.listen(4000, () => {
-  console.log('Server is running on http://localhost:4000');
+// Default Route
+app.get("/", (req, res) => {
+    res.send("Server is running with CORS enabled!");
+});
+
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });

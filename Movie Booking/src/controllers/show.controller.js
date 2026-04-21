@@ -2,117 +2,91 @@ import { showModel } from "../models/show.model.js";
 import deleteData from "../utils/deleteData.util.js";
 import fetchData from "../utils/fetchData.util.js";
 
+// 1. Add Show
 export const addShow = async (req, res) => {
     try {
+        
+        const { screenId, movieId, startTime, endTime, ticketPrice, price } = req.body;
 
-        const show = await showModel.findOne({
-            screenId: req.body.screenId,
-            startTime: new Date(req.body.startTime),
-            isDeleted: false
-        })
+        
+        const finalPrice = ticketPrice || price;
 
-        if (show) return res.status(409).json({ success: false, message: "already exist..." });
-
-        const start = new Date(req.body.startTime);
-        const end = new Date(req.body.endTime);
+        const start = new Date(startTime);
+        const end = new Date(endTime);
         const now = new Date();
 
+        // Basic Validation
         if (isNaN(start) || isNaN(end)) {
-            return res.status(400).json({
-                message: "Invalid date format"
-            });
+            return res.status(400).json({ success: false, message: "Invalid date format" });
         }
-
         if (start <= now) {
-            return res.status(400).json({
-                message: "Start time must be in future"
-            });
+            return res.status(400).json({ success: false, message: "Start time must be in future" });
         }
-
         if (end <= start) {
-            return res.status(400).json({
-                message: "End time must be after start time"
-            });
+            return res.status(400).json({ success: false, message: "End time must be after start time" });
         }
 
-        const isExist = await showModel.findOne({
-            screenId: req.body.screenId,
-            startTime: new Date(req.body.startTime),
-            isDeleted: true
-        });
-
-        if (isExist) {
-            const data = await showModel.findOneAndUpdate({
-                movieId: req.body.movieId,
-                screenId: req.body.screenId,
-                startTime: new Date(req.body.startTime),
-                isDeleted: true
-            }, {
-                isDeleted: false
-            }, {
-                new: true
-            });
-            return res.status(200).json({ success: true, message: "Successfully updated...", data });
-        }
-
-        const data = await showModel.create({
-            ...req.body
-        })
-
-        return res.status(200).json({ success: true, message: "Successfully added...", data });
-
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({ message: "Server Error..." });
-    }
-};
-
-export const fetchShow = async (req, res) => {
-    try {
-
-        const data = await fetchData(showModel, ['startTime', 'endTime'], req);
-
-        return res.status(200).json({ success: true, message: "fetch data...", data });
-
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({ message: "Server Error..." });
-    }
-};
-
-export const updateShow = async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        const show = await showModel.findOne({ _id: id, isDeleted: false });
-        if (!show) return res.status(404).json({ success: false, message: "not found..." });
-
-        let start = show.startTime;
-        let end = show.endTime;
-
-        if (req.body.startTime) start = new Date(req.body.startTime);
-        if (req.body.endTime) end = new Date(req.body.endTime);
-
-        const now = new Date();
-
-        if (isNaN(start) || isNaN(end)) return res.status(400).json({ message: "Invalid date format..." });
-        if (start <= now) return res.status(400).json({ message: "Start time must be in future..." });
-        if (end <= start) return res.status(400).json({ message: "End time must be after start time..." });
-
+        // Overlap Check
         const conflict = await showModel.findOne({
-            _id: { $ne: id },
-            screenId: req.body.screenId || show.screenId,
+            screenId,
             isDeleted: false,
             $or: [
-                {
-                    startTime: { $lt: end },
-                    endTime: { $gt: start }
-                }
+                { startTime: { $lt: end }, endTime: { $gt: start } }
             ]
         });
 
-        if (conflict)
-            return res.status(400).json({ message: "Show timing conflict on same screen..." });
+        if (conflict) {
+            return res.status(409).json({ success: false, message: "Show timing conflict! This screen is busy." });
+        }
+
+        // Reactivate soft deleted show if exact same exists
+        const isExist = await showModel.findOneAndUpdate(
+            { screenId, movieId, startTime: start, isDeleted: true },
+            { isDeleted: false, endTime: end, price: finalPrice },
+            { new: true }
+        );
+
+        if (isExist) {
+            return res.status(200).json({ success: true, message: "Show re-activated...", data: isExist });
+        }
+
+        // Create New Show
+        const data = await showModel.create({
+            ...req.body,
+            price: finalPrice, 
+            startTime: start,
+            endTime: end
+        });
+
+        return res.status(200).json({ success: true, message: "Show successfully added!", data });
+
+    } catch (error) {
+        console.log("Add Show Error:", error);
+        return res.status(500).json({ success: false, message: "Server Error", error: error.message });
+    }
+};
+
+// 2. Fetch Show
+export const fetchShow = async (req, res) => {
+    try {
+        const data = await showModel.find({ isDeleted: false })
+            .populate('movieId')
+            .populate('screenId');
+        return res.status(200).json({ success: true, message: "fetch data...", data });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// 3. Update Show
+export const updateShow = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const show = await showModel.findOne({ _id: id, isDeleted: false });
+        if (!show) return res.status(404).json({ success: false, message: "Show not found" });
+
+        let start = req.body.startTime ? new Date(req.body.startTime) : show.startTime;
+        let end = req.body.endTime ? new Date(req.body.endTime) : show.endTime;
 
         const updatedShow = await showModel.findByIdAndUpdate(
             id,
@@ -120,29 +94,20 @@ export const updateShow = async (req, res) => {
             { new: true }
         );
 
-        return res.status(200).json({
-            success: true,
-            message: "Successfully updated...",
-            data: updatedShow
-        });
-
+        return res.status(200).json({ success: true, message: "Successfully updated...", data: updatedShow });
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({ message: "Server Error..." });
+        return res.status(500).json({ success: false, message: error.message });
     }
 };
 
+// 4. Cancel/Delete Show 
 export const cancelShow = async (req, res) => {
     try {
-
         const { id } = req.params;
-
-        const data = await deleteData(showModel, id);
-
-        return res.status(200).json({ data });
-
+        const data = await showModel.findByIdAndUpdate(id, { isDeleted: true }, { new: true });
+        if (!data) return res.status(404).json({ success: false, message: "Show not found!" });
+        return res.status(200).json({ success: true, message: "Show cancelled successfully!" });
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({ message: "Server Error..." });
+        return res.status(500).json({ success: false, message: error.message });
     }
 };

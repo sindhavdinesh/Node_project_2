@@ -1,23 +1,20 @@
 const express = require("express");
 const router = express.Router();
-const { registerUser, loginUser } = require("../controllers/user.controller");
-const validator = require("../middleware/validationUser.js")
-const userRoute = require("./user.route");
+
+// 1. Saare Imports Ek Saath (Top par)
+const userRouter = require("./user.route");
+const productRoute = require("./product.route");
 const categoryRoute = require("./category.route");
-const UploadImage = require("../middleware/uploadImage");
-const subCategoryRoute = require("./subcategory.route");
-const productRoute = require("./product.route"); 
-const cartRoute = require("./cart.route")
-const wishlistRoute = require("./wishlist.route")
+const cartRoute = require("./cart.route");
+const wishlistRoute = require("./wishlist.route"); // Wishlist import
+const orderRoute = require("./order.route");       // Order import
 
-router.post("/register",validator, UploadImage.single("image"), registerUser);
-router.post("/login", loginUser);
-
-router.use("/user", userRoute);
-router.use("/categories", categoryRoute);
-router.use("/subcategory", subCategoryRoute);
+// 2. Saare URL Mappings (Bottom par)
+router.use("/users", userRouter);
 router.use("/products", productRoute);
-router.use("/cart", cartRoute)
-router.use("/wishlist", wishlistRoute);
-module.exports = router;
+router.use("/categories", categoryRoute);
+router.use("/cart", cartRoute);
+router.use("/wishlist", wishlistRoute); // http://localhost:4000/api/wishlist
+router.use("/orders", orderRoute);      // http://localhost:4000/api/orders
 
+module.exports = router;
