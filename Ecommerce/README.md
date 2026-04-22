@@ -1,4 +1,4 @@
-# 🛒 eCommerce api project Backend
+# 🛒 E-Commerce api project Backend
 
 A high-performance, scalable backend for a luxury eCommerce platform. This system handles complex product catalogs, secure user authentication, shopping carts, and order management with a focus on luxury aesthetics and speed.
 
