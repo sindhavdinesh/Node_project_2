@@ -41,7 +41,7 @@ router.get("/all", async (req, res) => {
     }
 });
 
-// 3. Delete Product 
+
 router.delete("/delete", async (req, res) => {
     try {
         const id = req.query.id; 
