@@ -24,7 +24,7 @@ const bookingSchema = Schema({
         enum: ['pending', 'confirmed', 'cancelled'],
         default: 'confirmed'
     },
-    isDeleted: { // Ye zaroori hai controller logic ke liye
+    isDeleted: { 
         type: Boolean,
         default: false
     }
