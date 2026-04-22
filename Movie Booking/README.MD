@@ -54,3 +54,6 @@ Movie Booking/
 | Show     | POST   | /api/show/add-show          | Schedule a movie on a screen        |
 | Booking  | POST   | /api/booking/add-booking    | Reserve seats for a show            |
 | User     | GET    | /api/booking/my-booking     | Fetch user's booking history        |
+
+Author 
+Sindhav Dinesh
