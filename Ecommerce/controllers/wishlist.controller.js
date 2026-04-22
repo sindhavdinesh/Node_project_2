@@ -23,7 +23,7 @@ exports.addToWishlist = async (req, res) => {
                 items: [{ productId }]
             });
         } else {
-            // Check karein ki product pehle se toh nahi hai
+            // Check product
             let itemExists = wishlist.items.find(
                 (item) => item.productId.toString() === productId
             );
@@ -32,7 +32,7 @@ exports.addToWishlist = async (req, res) => {
                 return res.status(400).json({ message: "Product already in wishlist" });
             }
 
-            // Wishlist update karein ($push use karke)
+            // Wishlist update 
             wishlist = await Wishlist.findOneAndUpdate(
                 { userId },
                 { $push: { items: { productId } } },
@@ -40,10 +40,10 @@ exports.addToWishlist = async (req, res) => {
             );
         }
 
-        // Final Data Populate karke bhejein
+        // Final Data 
         wishlist = await Wishlist.findOne({ userId }).populate({
             path: "items.productId",
-            select: "name price productImage" // Aapke model mein 'productImage' hai shayad
+            select: "name price productImage" // model product img
         });
 
         return res.status(200).json({
