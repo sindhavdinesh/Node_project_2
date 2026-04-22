@@ -1,22 +1,24 @@
-# 🎬 Movie Booking System - Backend
+# 🛒 ShopKart Pro - Premium eCommerce Backend
 
-A professional-grade Node.js backend architecture for a Movie Ticket Booking application. This system handles everything from secure user authentication to complex show scheduling and real-time seat reservations.
+A high-performance, scalable backend for a luxury eCommerce platform. This system handles complex product catalogs, secure user authentication, shopping carts, and order management with a focus on luxury aesthetics and speed.
 
 ---
 
 ## 🌟 Key Features
 
-- **Robust Authentication**: JWT-based security with Role-Based Access Control (RBAC).
-- **Movie Management**: Full CRUD operations with support for movie posters via Multer.
-- **Cinema Logic**: 
-  - Manage multiple screens and theater locations.
-  - Smart scheduling with automated timing conflict detection.
-- **Booking Engine**: 
-  - Real-time seat reservation (e.g., A1, A2).
-  - Dynamic seat availability tracking (`availableSeats` vs `totalSeats`).
-  - Automatic price calculation.
-- **Performance**: Optimized data fetching using MongoDB Aggregation pipelines and indexing.
-- **Integrity**: Soft-delete functionality for all critical records.
+- **Advanced Auth**: JWT-based authentication with encrypted passwords using Bcrypt.
+- **Product Management**: 
+  - CRUD operations for premium products.
+  - Category-based filtering and search functionality.
+  - Multiple image upload support via Multer.
+- **Shopping Cart System**: 
+  - Persistent cart management (linked to User ID).
+  - Real-time stock validation (prevents overselling).
+- **Order Engine**: 
+  - Detailed order tracking (Pending, Shipped, Delivered).
+  - Automatic total calculation including taxes and shipping.
+- **Security**: Role-based access (Admin can manage inventory, Users can shop).
+- **Optimized Performance**: Aggregation pipelines for dashboard analytics and sales reports.
 
 ---
 
@@ -25,39 +27,33 @@ A professional-grade Node.js backend architecture for a Movie Ticket Booking app
 - **Runtime**: Node.js
 - **Framework**: Express.js
 - **Database**: MongoDB with Mongoose ODM
-- **Authentication**: JWT (JSON Web Tokens) & Bcrypt
-- **File Handling**: Multer for image uploads
+- **Authentication**: JWT (JSON Web Tokens)
+- **Image Hosting**: Cloudinary / Local Storage (Multer)
 
 ---
 
 ## 📂 Project Structure
 
 ```text
-Movie Booking/
-├── public/                 # Static assets (Movie posters & images)
+ShopKart-Pro/
+├── public/                 # Product images and static assets
 ├── src/
-│   ├── config/             # Database configuration (MongoDB connection)
-│   ├── controllers/        # Core business logic (Booking, Show, Movie, User)
-│   ├── middleware/         # Auth guards, role verification, & validators
-│   ├── models/             # Mongoose schemas & data structure
-│   ├── routes/             # Express API routes
-│   ├── utils/              # Reusable helper utilities
-│   └── .env                # Environment variables (Secrets)
-├── .gitignore              # Files to be excluded from version control
-├── server.js               # Application entry point
-└── README.md               # Project documentation
-
+│   ├── config/             # DB Connection (connectDB.js)
+│   ├── controllers/        # Cart, Order, Product, & User Logic
+│   ├── middleware/         # Auth, FileUpload, & Input Validation
+│   ├── models/             # Mongoose Schemas (Cart, Order, Product, User)
+│   ├── routes/             # RESTful API Endpoints
+│   └── utils/              # Helper functions (Image upload, Data formatters)
+├── server.js               # Main entry point
+└── README.md               # Documentation
 
 ## 📡 API Overview (Endpoints)
 
 | Module   | Method | Endpoint                    | Description                         |
 | :------- | :----- | :-------------------------- | :---------------------------------- |
-| Auth     | POST   | /api/user/login             | Returns secure JWT token            |
-| Movie    | POST   | /api/movie/add              | Add movie with poster upload        |
-| Screen   | GET    | /api/screen/fetch-screen    | List all cinema halls               |
-| Show     | POST   | /api/show/add-show          | Schedule a movie on a screen        |
-| Booking  | POST   | /api/booking/add-booking    | Reserve seats for a show            |
-| User     | GET    | /api/booking/my-booking     | Fetch user's booking history        |
-
-Author
-Sindhav Dinesh
+| Auth     | POST   | /api/user/register          | Create a new premium account        |
+| Products | GET    | /api/product/all            | Fetch all luxury products           |
+| Cart     | POST   | /api/cart/add               | Add items to the shopping cart      |
+| Orders   | POST   | /api/order/checkout         | Place a new order                   |
+| Admin    | PUT    | /api/admin/update-stock     | Update inventory levels             |
+| Profile  | GET    | /api/user/my-orders         | View user's purchase history        |
