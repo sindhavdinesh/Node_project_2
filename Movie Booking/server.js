@@ -10,7 +10,7 @@ app.use(json());
 app.use(urlencoded({ extended: true }));
 app.use('/images', express.static('public/images'));
 
-
+// API Route
 app.use('/api', router);
 
 app.listen(port, () => {
