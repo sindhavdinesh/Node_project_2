@@ -54,3 +54,6 @@ Ecommerce/
 | Orders   | POST   | /api/order/checkout         | Place a new order                   |
 | Admin    | PUT    | /api/admin/update-stock     | Update inventory levels             |
 | Profile  | GET    | /api/user/my-orders         | View user's purchase history        |
+
+Author
+Sindhav Dinesh
