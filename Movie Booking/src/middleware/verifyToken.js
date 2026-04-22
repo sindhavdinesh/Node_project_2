@@ -9,13 +9,13 @@ export const verifyToken = async (req, res, next) => {
             return res.status(401).json({ success: false, message: 'Token not found. Please login.' });
         }
 
-        // Check if it's a Bearer token
+        
         const token = authorization.split(" ")[1];
         if (!token) {
             return res.status(401).json({ success: false, message: 'Invalid Token format' });
         }
 
-        // Matched with your .env key: JWT_SECRET
+        
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         const user = await userModel.findOne({ _id: decoded.userId, isDeleted: false });
