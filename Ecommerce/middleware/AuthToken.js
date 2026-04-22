@@ -9,10 +9,10 @@ exports.verifyToken = async (req, res, next) => {
         }
 
         let token = authorization.split(" ")[1];
-        // Secret key check karein (.env file mein honi chahiye)
+        // Secret key 
         let decoded = jwt.verify(token, process.env.SECRET_KEY);
         
-        // Dono check: decoded.id aur decoded._id
+        // Dono check
         let user = await User.findById(decoded.id || decoded._id);
 
         if (!user) {
