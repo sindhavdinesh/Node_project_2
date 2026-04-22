@@ -1,4 +1,4 @@
-# 🛒 ShopKart Pro - Premium eCommerce Backend
+# 🛒 eCommerce api project Backend
 
 A high-performance, scalable backend for a luxury eCommerce platform. This system handles complex product catalogs, secure user authentication, shopping carts, and order management with a focus on luxury aesthetics and speed.
 
@@ -33,19 +33,16 @@ A high-performance, scalable backend for a luxury eCommerce platform. This syste
 ---
 
 ## 📂 Project Structure
-
-```text
-ShopKart-Pro/
-├── public/                 # Product images and static assets
-├── src/
-│   ├── config/             # DB Connection (connectDB.js)
-│   ├── controllers/        # Cart, Order, Product, & User Logic
-│   ├── middleware/         # Auth, FileUpload, & Input Validation
-│   ├── models/             # Mongoose Schemas (Cart, Order, Product, User)
-│   ├── routes/             # RESTful API Endpoints
-│   └── utils/              # Helper functions (Image upload, Data formatters)
-├── server.js               # Main entry point
-└── README.md               # Documentation
+Ecommerce/
+├── config/             # Database connection & environment setup
+├── controllers/        # Core logic (Product, Cart, Order, User)
+├── middleware/         # Auth guards, role checks, & image validators
+├── models/             # Mongoose Schemas (User, Product, Cart, Order)
+├── routes/             # API Endpoints (user.route.js, product.route.js, etc.)
+├── uploads/            # Static storage for Product images
+├── .gitignore          # Files to ignore (node_modules, .env)
+├── server.js           # Entry point of the server
+└── README.md           # Documentation
 
 ## 📡 API Overview (Endpoints)
 
