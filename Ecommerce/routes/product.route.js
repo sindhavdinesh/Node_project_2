@@ -41,10 +41,10 @@ router.get("/all", async (req, res) => {
     }
 });
 
-// 3. Delete Product using Query Params (?id=...)
+// 3. Delete Product 
 router.delete("/delete", async (req, res) => {
     try {
-        const id = req.query.id; // Postman mein URL ke piche ?id=... se value aayegi
+        const id = req.query.id; 
 
         if (!id) {
             return res.status(400).json({ message: "Product ID is required in query params" });
