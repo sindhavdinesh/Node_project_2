@@ -1,133 +1,56 @@
-# 🎬 Movie Booking API
+# 🎬 Movie Booking API - Backend
 
-A RESTful backend system for managing a movie ticket booking platform built with Node.js, Express, MongoDB, JWT authentication, and role-based access control.
-
----
-
-## 🚀 Features
-
-- 👤 User authentication (Register / Login / Profile)
-- 🔐 JWT-based authentication
-- 🛡️ Role-based access control (admin / user)
-- 🎥 Movie CRUD with image upload
-- 🎬 Screen management
-- 📅 Show scheduling with time validation
-- 🎟️ Seat booking system
-- 📊 Booking history (user + admin)
-- 🔍 Search, sorting & pagination support
-- 🗑️ Soft delete system
+A professional and robust Node.js backend architecture for a Movie Ticket Booking application. This project features secure authentication, cinema hall management, and real-time seat reservation logic.
 
 ---
 
-## 🏗️ Tech Stack
+## 🌟 Key Features
 
-- Node.js
-- Express.js
-- MongoDB + Mongoose
-- JWT
-- bcrypt
-- Multer
-- express-validator
-- dotenv
+- **JWT Authentication**: Secure user login/registration with role-based access.
+- **Show Management**: Smart scheduling that prevents timing conflicts on the same screen.
+- **Seat Booking Engine**: 
+  - Real-time seat reservation (e.g., A1, A2).
+  - Automated tracking of `availableSeats` and `reservedSeats`.
+- **File Storage**: Movie posters managed via Multer and stored in `public/images`.
+- **Advanced Querying**: MongoDB Aggregation pipelines for complex data fetching.
+- **Soft Delete**: Data integrity maintained using `isDeleted` flags across all modules.
 
 ---
 
-## 📁 Project Structure
+## 🛠️ Tech Stack
 
+- **Runtime**: Node.js
+- **Framework**: Express.js
+- **Database**: MongoDB with Mongoose ODM
+- **Auth**: JWT (JSON Web Tokens) & Bcrypt
+- **Storage**: Local Disk Storage (Multer)
+
+---
+
+## 📂 Project Structure
+
+```text
 Movie Booking/
-├── app.js
-├── package.json
-└── src/
-    ├── config/
-    ├── controllers/
-    ├── models/
-    ├── routes/
-    ├── middleware/
-    └── utils/
+├── public/
+│   └── images/         # Movie posters and static assets
+├── src/
+│   ├── config/         # Database connection setup
+│   ├── controllers/    # Core business logic (Booking, Show, Movie, User)
+│   ├── middleware/     # Auth guards, role checks, and validators
+│   ├── models/         # Mongoose Schemas & Data Models
+│   ├── routes/         # RESTful API Endpoints
+│   └── utils/          # Global helper functions (Data Fetch/Delete)
+├── .gitignore          # Environment & node_modules exclusion
+├── server.js           # Main application entry point
+└── README.md           # Documentation
 
----
+## 📡 API Overview (Endpoints)
 
-## ⚙️ Installation
-
-### 1. Clone repo
-git clone <repo-url>
-cd movie-booking
-
-### 2. Install dependencies
-npm install
-
-### 3. Create .env file
-
-PORT=3000
-DB_PATH=mongodb://localhost:27017/movie-booking
-SECRET_KEY=your_jwt_secret
-
----
-
-## ▶️ Run Project
-
-npm run dev
-
-Server runs at:
-http://localhost:3000
-
----
-
-## 🔑 Authentication
-
-Authorization: Bearer <token>
-
----
-
-## 📌 API Endpoints
-
-### Auth
-- POST /api/register
-- POST /api/login
-
-### Users
-- GET /api/user/get-profile
-- POST /api/user/update-user
-- PUT /api/user/log-out-user
-- GET /api/user/fetch-user (admin)
-
-### Movies
-- POST /api/movie/add-movie (admin)
-- POST /api/movie/update-movie/:id (admin)
-- GET /api/movie/fetch-movie
-- DELETE /api/movie/delete-movie/:id (admin)
-
-### Screens
-- POST /api/screen/add-screen (admin)
-- PUT /api/screen/update-screen (admin)
-- GET /api/screen/fetch-screen
-- PUT /api/screen/delete-screen/:id (admin)
-
-### Shows
-- POST /api/show/add-show (admin)
-- GET /api/show/fetch-show
-- PUT /api/show/update-show/:id (admin)
-- DELETE /api/show/cancel-show/:id (admin)
-
-### Bookings
-- POST /api/booking/add-booking
-- PUT /api/booking/update-booking/:id
-- DELETE /api/booking/cancel-booking/:id
-- GET /api/booking/my-booking
-- GET /api/booking/fetch-booking (admin)
-
----
-
-## 🧠 Highlights
-
-- Seat conflict prevention
-- Show time validation
-- Soft delete system
-- JWT authentication
-- Aggregation-based admin booking search
-
----
-
-## 👨‍💻 Author
-
-Built with Node.js + MongoDB
+| Module   | Method | Endpoint                    | Description                         |
+| :------- | :----- | :-------------------------- | :---------------------------------- |
+| Auth     | POST   | /api/user/login             | Returns secure JWT token            |
+| Movie    | POST   | /api/movie/add              | Add movie with poster upload        |
+| Screen   | GET    | /api/screen/fetch-screen    | List all cinema halls               |
+| Show     | POST   | /api/show/add-show          | Schedule a movie on a screen        |
+| Booking  | POST   | /api/booking/add-booking    | Reserve seats for a show            |
+| User     | GET    | /api/booking/my-booking     | Fetch user's booking history        |
