@@ -3,9 +3,9 @@ const Cart = require("../models/cart.model");
 exports.addToCart = async (req, res) => {
     try {
         const { productId, quantity } = req.body;
-        const userId = req.user._id; // Yeh verifyToken middleware se aayega
+        const userId = req.user._id; 
 
-        // Check karein ki kya yeh product pehle se cart mein hai?
+        
         let cartItem = await Cart.findOne({ userId, productId });
 
         if (cartItem) {
@@ -23,7 +23,7 @@ exports.addToCart = async (req, res) => {
 
 exports.getCart = async (req, res) => {
     try {
-        // .populate se product ki details (name, price) bhi mil jayengi
+        
         const cartItems = await Cart.find({ userId: req.user._id }).populate("productId");
         res.status(200).json(cartItems);
     } catch (error) {
