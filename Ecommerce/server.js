@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const cors = require('cors'); // <--- 1. Sabse pehle yahan import karein
+const cors = require('cors'); 
 const app = express();
 const path = require('path');
 const connectDB = require('./config/dbConnection');
@@ -8,9 +8,9 @@ const connectDB = require('./config/dbConnection');
 // Database Connect
 connectDB();
 
-// --- Middlewares ---
+// Middlewares 
 
-app.use(cors()); // <--- 2. Ise sabse upar rakhein taaki koi request block na ho
+app.use(cors()); 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
